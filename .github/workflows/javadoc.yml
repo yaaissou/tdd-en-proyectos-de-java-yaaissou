@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - stable # Se ejecuta solo cuando hay cambios en la rama stable
+      
 
 jobs:
   deploy-javadoc:
