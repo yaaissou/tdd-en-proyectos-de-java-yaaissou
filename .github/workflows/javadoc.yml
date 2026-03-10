@@ -1,0 +1,32 @@
+name: Publicar Javadoc en GitHub Pages
+
+on:
+  push:
+    branches:
+      - stable # Se ejecuta solo cuando hay cambios en la rama stable
+
+jobs:
+  deploy-javadoc:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Necesario para publicar en la rama de la web
+
+    steps:
+      - name: 1. Descargar el código
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21' # La versión que tenías instalada en tu terminal
+          distribution: 'temurin'
+
+      - name: 3. Generar Javadoc
+        # Ejecutamos tu comando y guardamos el HTML en la carpeta "docs"
+        run: javadoc -d docs src/main/java/com/tt1/test/*.java
+
+      - name: 4. Publicar en GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs # Sube lo generado a la web
