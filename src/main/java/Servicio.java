@@ -2,13 +2,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase principal que actúa como servicio de lógica de negocio.
+ * Se encarga de gestionar las tareas, interactuar con el repositorio y enviar notificaciones.
+ */
 public class Servicio {
     private Repositorio repositorio;
     private MailerStub mailer;
 
     /**
-     * Clase principal que actúa como servicio de lógica de negocio.
-     * Se encarga de gestionar las tareas, interactuar con el repositorio y enviar notificaciones.
+     * Constructor de la clase Servicio.
+     * * @param repositorio El repositorio donde se almacenan y consultan los datos.
+     * @param mailer El servicio (stub) encargado de enviar los correos electrónicos.
      */
     public Servicio(Repositorio repositorio, MailerStub mailer) {
         this.repositorio = repositorio;
@@ -26,25 +31,39 @@ public class Servicio {
         if (nombre == null || nombre.trim().isEmpty()) return false; // Validación
         ToDo nuevaTarea = new ToDo(nombre, "Sin descripción", fechaLimite);
         repositorio.almacenarToDo(nuevaTarea);
-        comprobarFechasYAlertar(); // Comprueba tras añadir
+        compruebaFechasYAlertar(); // Comprueba tras añadir
         return true;
     }
 
+    /**
+     * Añade una nueva dirección de correo electrónico al sistema de alertas.
+     * * @param email La dirección de correo electrónico a añadir.
+     * @return true si el formato del email es válido, false en caso contrario.
+     */
     public boolean agregarEmail(String email) {
         if (email == null || !email.contains("@")) return false; // Validación
         repositorio.almacenarEmail(email);
-        comprobarFechasYAlertar(); // Comprueba tras añadir
+        compruebaFechasYAlertar(); // Comprueba tras añadir
         return true;
     }
 
+    /**
+     * Marca una tarea existente como finalizada en el sistema.
+     * * @param nombre El nombre exacto de la tarea a marcar.
+     * @return true si la operación tuvo éxito, false si falló (ej. no existe la tarea).
+     */
     public boolean marcarFinalizada(String nombre) {
         boolean exito = repositorio.marcarCompletado(nombre);
-        comprobarFechasYAlertar(); // Comprueba tras consultar
+        compruebaFechasYAlertar(); // Comprueba tras consultar
         return exito;
     }
 
+    /**
+     * Consulta y devuelve una lista con todas las tareas que aún no están completadas.
+     * * @return Una lista de objetos ToDo que representan las tareas pendientes.
+     */
     public List<ToDo> consultarPendientes() {
-        comprobarFechasYAlertar(); // Comprueba tras consultar
+        compruebaFechasYAlertar(); // Comprueba tras consultar
         List<ToDo> pendientes = new ArrayList<>();
         for (ToDo tarea : repositorio.obtenerTodasLasTareas()) {
             if (!tarea.isCompletado()) {
@@ -54,7 +73,11 @@ public class Servicio {
         return pendientes;
     }
 
-    private void comprobarFechasYAlertar() {
+    /**
+     * Método interno que comprueba si existen tareas cuya fecha límite es anterior a hoy.
+     * Si encuentra alguna, envía un correo de alerta a todas las direcciones registradas.
+     */
+    private void compruebaFechasYAlertar() {
         LocalDate hoy = LocalDate.now();
         boolean hayVencidas = false;
 

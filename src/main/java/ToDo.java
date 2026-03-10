@@ -9,13 +9,13 @@ public class ToDo {
     private String descripcion;
     private LocalDate fechaLimite;
     private boolean completado;
+    
     /**
      * Constructor de la clase ToDo.
      * * @param nombre El nombre identificativo de la tarea.
      * @param descripcion La descripción detallada de la tarea.
      * @param fechaLimite La fecha tope para completar la tarea.
      */
-
     public ToDo(String nombre, String descripcion, LocalDate fechaLimite) {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -23,9 +23,29 @@ public class ToDo {
         this.completado = false; // Por defecto, una tarea no está completada
     }
 
+    /**
+     * @return El nombre de la tarea.
+     */
     public String getNombre() { return nombre; }
+    
+    /**
+     * @return La descripción de la tarea.
+     */
     public String getDescripcion() { return descripcion; }
+    
+    /**
+     * @return La fecha límite de la tarea.
+     */
     public LocalDate getFechaLimite() { return fechaLimite; }
+    
+    /**
+     * @return true si la tarea está completada, false si sigue pendiente.
+     */
     public boolean isCompletado() { return completado; }
+    
+    /**
+     * Cambia el estado de finalización de la tarea.
+     * @param completado true para marcarla como finalizada, false para pendiente.
+     */
     public void setCompletado(boolean completado) { this.completado = completado; }
 }
